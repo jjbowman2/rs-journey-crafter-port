@@ -1,20 +1,20 @@
 import {
-	Heading,
+	Button,
+	Container,
 	Flex,
 	FormControl,
 	FormLabel,
-	Select,
-	Button,
-	Container,
+	Heading,
 	Input,
+	Select,
 } from "@chakra-ui/react";
 import { useAtom } from "jotai";
-import { useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
-import { PageWithAuth } from "../../utils/auth.utils";
-import { selectedAccountIdAtom } from "../../components/accounts-dropdown";
 import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import { selectedAccountIdAtom } from "../../components/accounts-dropdown";
+import { PageWithAuth } from "../../utils/auth.utils";
 import { trpc } from "../../utils/trpc";
 
 const AddAccount: PageWithAuth = () => {
@@ -31,8 +31,9 @@ const AddAccount: PageWithAuth = () => {
 	const mutation = trpc.useMutation(["account.createAccount"], {
 		onSuccess(data) {
 			setSelectedAccountId(data.id);
-			invalidateQueries(["account.findAllForUser"]);
-			router.push("/");
+			invalidateQueries(["account.findAllForUser"]).then(() =>
+				router.push("/")
+			);
 		},
 	});
 

@@ -119,3 +119,9 @@ export const XIcon = (props: IconProps) => (
 		<i className="fa-solid fa-x" />
 	</Icon>
 );
+
+export const HourGlassIcon = (props: IconProps) => (
+	<Icon {...props}>
+		<i className="fa-solid fa-hourglass-start" />
+	</Icon>
+);

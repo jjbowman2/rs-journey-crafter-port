@@ -1,21 +1,21 @@
 // src/pages/_app.tsx
+import { ChakraProvider, Progress } from "@chakra-ui/react";
 import "@fontsource/inter";
 import { withTRPC } from "@trpc/next";
-import type { AppRouter } from "../server/router";
+import { SessionProvider, useSession } from "next-auth/react";
 import type {
 	AppPropsType,
 	AppType,
 	NextComponentType,
 	NextPageContext,
 } from "next/dist/shared/lib/utils";
-import superjson from "superjson";
-import { SessionProvider, useSession } from "next-auth/react";
-import "../styles/globals.css";
-import { ChakraProvider } from "@chakra-ui/react";
-import theme from "../utils/theme";
-import { AuthEnabledComponentConfig } from "../utils/auth.utils";
-import Header from "../components/header";
 import { ReactQueryDevtools } from "react-query/devtools";
+import superjson from "superjson";
+import Header from "../components/header";
+import type { AppRouter } from "../server/router";
+import "../styles/globals.css";
+import { AuthEnabledComponentConfig } from "../utils/auth.utils";
+import theme from "../utils/theme";
 
 type AppAuthProps = AppPropsType & {
 	Component: NextComponentType<NextPageContext, any, {}> &
@@ -48,7 +48,16 @@ const Auth: React.FC<any> = ({ children }) => {
 	const { status } = useSession({ required: true });
 
 	if (status === "loading") {
-		return <div>Loading...</div>;
+		return (
+			<Progress
+				size="sm"
+				position="fixed"
+				bottom="0"
+				w="full"
+				colorScheme="orange"
+				isIndeterminate
+			/>
+		);
 	}
 
 	return children;

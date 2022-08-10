@@ -28,9 +28,16 @@ export function DeleteTaskDialog({
 	const cancelRef = useRef<HTMLButtonElement | null>(null);
 	const { queryClient } = trpc.useContext();
 	const mutation = trpc.useMutation(["task.deleteTaskById"], {
-		onMutate: () => queryClient.cancelQueries(["tasks", task.accountId]),
+		onMutate: () =>
+			queryClient.cancelQueries([
+				"task.findAllTasksForAccount",
+				task.accountId,
+			]),
 		onSettled: () => {
-			queryClient.invalidateQueries(["tasks", task.accountId]);
+			queryClient.invalidateQueries([
+				"task.findAllTasksForAccount",
+				task.accountId,
+			]);
 			onClose();
 			onDelete && onDelete();
 		},

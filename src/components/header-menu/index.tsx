@@ -1,7 +1,7 @@
 import { Flex, IconButton, useColorMode } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
-import { MoonIcon, SunIcon } from "../icons";
 import AccountsDropdown from "../accounts-dropdown";
+import { MoonIcon, SunIcon } from "../icons";
 import LoginButton from "../login-button";
 
 export default function HeaderMenu() {
@@ -14,7 +14,7 @@ export default function HeaderMenu() {
 	}
 
 	if (status == "loading") {
-		return <p>Loading...</p>;
+		return null;
 	}
 
 	return (

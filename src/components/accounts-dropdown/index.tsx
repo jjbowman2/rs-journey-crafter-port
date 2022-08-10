@@ -6,16 +6,15 @@ import {
 	MenuItem,
 	MenuList,
 } from "@chakra-ui/react";
-import { ChevronDownIcon } from "../icons";
-import LogoutButton from "../logout-button";
-import { atomWithStorage } from "jotai/utils";
-import { atom, useAtom } from "jotai";
-import { trpc } from "../../utils/trpc";
-import { useSession } from "next-auth/react";
-import { useEffect } from "react";
 import { AccountType, Game, GameAccount } from "@prisma/client";
-import { PlusIcon } from "../icons";
+import { atom, useAtom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { trpc } from "../../utils/trpc";
+import { ChevronDownIcon, PlusIcon } from "../icons";
+import LogoutButton from "../logout-button";
 
 export const selectedAccountIdAtom = atomWithStorage("selected-account-id", "");
 export const selectedAccountAtom = atom<GameAccount | null | undefined>(
@@ -35,14 +34,22 @@ export default function AccountsDropdown() {
 	);
 
 	useEffect(() => {
-		if (selectedAccountId && !isLoading) {
-			// set as null to indicate a lack of accounts (as opposed to none yet selected due to loading)
-			setSelectedAccount(
-				data?.find(
-					(account) => account.id.toString() === selectedAccountId
-				) || null
-			);
+		if (isLoading || selectedAccountId) return;
+		if (data?.length) {
+			setSelectedAccountId(data[0]?.id || "");
 		}
+	}, [isLoading, selectedAccountId, data, setSelectedAccountId]);
+
+	useEffect(() => {
+		// if the query is still loading or the selectedAccountId is not set but there is data, return
+		if (isLoading) return;
+		if (!selectedAccountId && data?.length) return;
+		// set as null to indicate a lack of accounts (as opposed to none yet selected due to loading)
+		setSelectedAccount(
+			data?.find(
+				(account) => account.id.toString() === selectedAccountId
+			) || null
+		);
 	}, [data, isLoading, selectedAccountId, setSelectedAccount]);
 
 	if (isError || isLoading) {
