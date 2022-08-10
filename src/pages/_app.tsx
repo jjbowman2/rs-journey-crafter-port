@@ -1,5 +1,5 @@
 // src/pages/_app.tsx
-import { ChakraProvider, Progress } from "@chakra-ui/react";
+import { ChakraProvider } from "@chakra-ui/react";
 import "@fontsource/inter";
 import { withTRPC } from "@trpc/next";
 import { SessionProvider, useSession } from "next-auth/react";
@@ -12,6 +12,7 @@ import type {
 import { ReactQueryDevtools } from "react-query/devtools";
 import superjson from "superjson";
 import Header from "../components/header";
+import LoadingIndicator from "../components/loading-indicator";
 import type { AppRouter } from "../server/router";
 import "../styles/globals.css";
 import { AuthEnabledComponentConfig } from "../utils/auth.utils";
@@ -48,16 +49,7 @@ const Auth: React.FC<any> = ({ children }) => {
 	const { status } = useSession({ required: true });
 
 	if (status === "loading") {
-		return (
-			<Progress
-				size="sm"
-				position="fixed"
-				bottom="0"
-				w="full"
-				colorScheme="orange"
-				isIndeterminate
-			/>
-		);
+		return <LoadingIndicator />;
 	}
 
 	return children;

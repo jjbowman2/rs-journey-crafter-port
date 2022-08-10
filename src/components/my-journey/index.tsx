@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { trpc } from "../../utils/trpc";
 import { selectedAccountAtom } from "../accounts-dropdown";
 import JourneyToolbar from "../journey-toolbar";
+import LoadingIndicator from "../loading-indicator";
 import TaskCard from "../task-card";
 
 export default function MyJourney() {
@@ -28,7 +29,7 @@ export default function MyJourney() {
 
 	// query is dependent on loading the selectedAccount, loading won't start unless selectedAccount is truthy
 	if (isLoading || !selectedAccount) {
-		return <p>Loading...</p>;
+		return <LoadingIndicator />;
 	}
 
 	if (isError) {

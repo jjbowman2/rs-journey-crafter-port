@@ -6,7 +6,6 @@ import {
 	Heading,
 	IconButton,
 	Spacer,
-	Spinner,
 	Tag,
 	Text,
 	Tooltip,
@@ -26,6 +25,7 @@ import {
 	PlusIcon,
 	TrashIcon,
 } from "../../../components/icons";
+import LoadingIndicator from "../../../components/loading-indicator";
 // import TaskCard from "../../../components/task-card";
 import { PageWithAuth } from "../../../utils/auth.utils";
 import { trpc } from "../../../utils/trpc";
@@ -59,12 +59,7 @@ const TaskPage: PageWithAuth = ({}) => {
 		mutation.mutate({ id: task!.id, complete: !task!.complete });
 	};
 
-	if (isLoading)
-		return (
-			<Center h="48">
-				<Spinner />
-			</Center>
-		);
+	if (isLoading) return <LoadingIndicator />;
 
 	if (isError)
 		return (

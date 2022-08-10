@@ -1,15 +1,9 @@
-import {
-	Center,
-	Container,
-	Flex,
-	IconButton,
-	Spinner,
-	Text,
-} from "@chakra-ui/react";
+import { Center, Container, Flex, IconButton, Text } from "@chakra-ui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import EditTaskForm from "../../../components/edit-task-form";
 import { ChevronLeftIcon } from "../../../components/icons";
+import LoadingIndicator from "../../../components/loading-indicator";
 import { PageWithAuth } from "../../../utils/auth.utils";
 import { trpc } from "../../../utils/trpc";
 
@@ -22,12 +16,7 @@ const EditTaskPage: PageWithAuth = () => {
 		data: task,
 	} = trpc.useQuery(["task.findTaskById", id]);
 
-	if (isLoading)
-		return (
-			<Center h="48">
-				<Spinner />
-			</Center>
-		);
+	if (isLoading) return <LoadingIndicator />;
 
 	if (isError)
 		return (
