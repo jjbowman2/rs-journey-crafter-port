@@ -13,7 +13,7 @@ The current instance of this project is built on the [T3 stack](https://init.tip
 Although this is very much a work-in-progress, it is a passion project of mine that I envision being pretty feature rich. In its current build, there are a lot of disabled components and placeholders for future features. I will likely enhance the application in this order:
 
 -   [X] Adding prerequisite tasks
-    -   [ ] Sorting and viewing tasks by optimal completion order (topographical sort)
+    -   [ ] Sorting and viewing tasks by optimal completion order (topological sort)
 -   [ ] Smart suggestion for Basic Task creation
     -   Ex) A user enter "Drag", then it could suggest 1) Complete Dragon Slayer 2) Obtain Dragon War Hammer 3) Obtain Dragon Hunter Lance, etc...
 -   [ ] Journey Templates - A set of tasks commonly done by experienced players (Optimal Barrows Glove Guide)
