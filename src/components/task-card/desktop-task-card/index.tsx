@@ -1,40 +1,42 @@
 import {
-	Flex,
 	Box,
-	Heading,
-	Tooltip,
-	IconButton,
-	Text,
-	useBoolean,
 	Checkbox,
-	Stack,
-	useColorModeValue,
+	Flex,
+	Heading,
+	IconButton,
 	LinkBox,
 	LinkOverlay,
-	useDisclosure,
+	Stack,
 	Tag,
+	Text,
+	Tooltip,
+	useBoolean,
+	useColorModeValue,
+	useDisclosure,
 } from "@chakra-ui/react";
 import { Task } from "@prisma/client";
 import Link from "next/link";
+import CreatePrerequisiteModal from "../../create-prerequisite-modal";
 import DeleteTaskDialog from "../../delete-task-dialog";
 import {
-	DownIcon,
-	UpIcon,
 	CreateEditIcon,
+	DownIcon,
 	FlagIcon,
-	PlusIcon,
 	TrashIcon,
+	UpIcon,
 } from "../../icons";
 import TaskIcon from "../../task-icon";
 
 export interface DesktopTaskCardProps {
 	task: Task;
 	toggleComplete: () => void;
+	toggleFlagged: () => void;
 }
 
 export function DesktopTaskCard({
 	task,
 	toggleComplete,
+	toggleFlagged,
 }: DesktopTaskCardProps) {
 	const [expanded, { toggle }] = useBoolean(false);
 	const color = useColorModeValue("blackAlpha.800", "whiteAlpha.800");
@@ -51,7 +53,7 @@ export function DesktopTaskCard({
 					mt="44px"
 				/>
 				<LinkBox flex="1" alignSelf="center">
-					<Link href={`task/${task.id}`}>
+					<Link href={`/task/${task.id}`}>
 						<LinkOverlay cursor="pointer">
 							<Stack py={8}>
 								<Flex>
@@ -153,11 +155,11 @@ export function DesktopTaskCard({
 						icon={<FlagIcon />}
 						variant="ghost"
 						size="lg"
-						disabled
-						title="Flag task coming soon"
+						onClick={toggleFlagged}
+						colorScheme={task.flagged ? "red" : undefined}
 					/>
 				</Tooltip>
-				<Tooltip
+				{/* <Tooltip
 					placement="top"
 					label="Add prerequisite"
 					openDelay={500}
@@ -170,7 +172,8 @@ export function DesktopTaskCard({
 						disabled
 						title="Prerequisites coming soon"
 					/>
-				</Tooltip>
+				</Tooltip> */}
+				<CreatePrerequisiteModal dependentTaskId={task.id} />
 				<Tooltip placement="top" label="Delete task" openDelay={500}>
 					<IconButton
 						aria-label="delete task"

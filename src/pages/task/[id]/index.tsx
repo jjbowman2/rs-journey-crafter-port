@@ -6,6 +6,7 @@ import {
 	Heading,
 	IconButton,
 	Spacer,
+	Stack,
 	Tag,
 	Text,
 	Tooltip,
@@ -16,16 +17,17 @@ import { Task } from "@prisma/client";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import CreatePrerequisiteModal from "../../../components/create-prerequisite-modal";
 import DeleteTaskDialog from "../../../components/delete-task-dialog";
 import {
 	CheckIcon,
 	ChevronLeftIcon,
 	CreateEditIcon,
 	FlagIcon,
-	PlusIcon,
 	TrashIcon,
 } from "../../../components/icons";
 import LoadingIndicator from "../../../components/loading-indicator";
+import TaskCard from "../../../components/task-card";
 // import TaskCard from "../../../components/task-card";
 import { PageWithAuth } from "../../../utils/auth.utils";
 import { trpc } from "../../../utils/trpc";
@@ -40,14 +42,18 @@ const TaskPage: PageWithAuth = ({}) => {
 		isError,
 		data: task,
 	} = trpc.useQuery(["task.findTaskById", id]);
+	const { data: prerequisites } = trpc.useQuery([
+		"task.findAllDependeesForTask",
+		id,
+	]);
 	const { queryClient } = trpc.useContext();
 	const mutation = trpc.useMutation(["task.updateTask"], {
-		onMutate: ({ complete }) => {
+		onMutate: (update) => {
 			queryClient.cancelQueries(["task.findTaskById", task?.id]);
 			queryClient.setQueryData(
 				["task.findTaskById", task?.id],
 				// @ts-ignore
-				(prev: Task) => ({ ...prev, complete })
+				(prev: Task) => ({ ...prev, ...update })
 			);
 		},
 		onSettled: () => {
@@ -57,6 +63,10 @@ const TaskPage: PageWithAuth = ({}) => {
 
 	const toggleComplete = () => {
 		mutation.mutate({ id: task!.id, complete: !task!.complete });
+	};
+
+	const toggleFlagged = () => {
+		mutation.mutate({ id: task!.id, flagged: !task!.flagged });
 	};
 
 	if (isLoading) return <LoadingIndicator />;
@@ -89,7 +99,7 @@ const TaskPage: PageWithAuth = ({}) => {
 						variant="ghost"
 						aria-label="Go back"
 						icon={<ChevronLeftIcon />}
-						onClick={() => router.back()}
+						onClick={() => router.push("/")}
 					/>
 					<Spacer />
 					{task && (
@@ -118,24 +128,13 @@ const TaskPage: PageWithAuth = ({}) => {
 									icon={<FlagIcon />}
 									variant="ghost"
 									size="lg"
-									disabled
-									title="Flag task coming soon"
+									onClick={toggleFlagged}
+									colorScheme={
+										task.flagged ? "red" : undefined
+									}
 								/>
 							</Tooltip>
-							<Tooltip
-								placement="top"
-								label="Add prerequisite"
-								openDelay={500}
-							>
-								<IconButton
-									aria-label="add prerequisite task"
-									icon={<PlusIcon />}
-									variant="ghost"
-									size="lg"
-									disabled
-									title="Prerequisites coming soon"
-								/>
-							</Tooltip>
+							<CreatePrerequisiteModal dependentTaskId={id} />
 							<Tooltip
 								placement="top"
 								label="Delete task"
@@ -189,16 +188,6 @@ const TaskPage: PageWithAuth = ({}) => {
 						))}
 					</Flex>
 				)}
-				{/* <Heading fontWeight="semibold" color={color} fontSize="18px">
-					Prerequisites
-				</Heading>
-				{task.dependees?.length === 0 ? (
-					<Text>This task does not have any prerequisites.</Text>
-				) : (
-					task.dependees.map((dependee) => (
-						<TaskCard key={dependee.dependeeId} task={} /> // fetch dependee as task
-					))
-				)} */}
 				<Flex justifyContent="end">
 					<Button
 						colorScheme="orange"
@@ -209,6 +198,27 @@ const TaskPage: PageWithAuth = ({}) => {
 						{task.complete ? "Mark Uncomplete" : "Mark Complete"}
 					</Button>
 				</Flex>
+
+				<Stack display="flex" justifyContent="right">
+					<Heading
+						fontWeight="semibold"
+						color={color}
+						fontSize="18px"
+						mt="24px"
+					>
+						Prerequisites
+					</Heading>
+					{prerequisites?.length === 0 ? (
+						<Text>This task does not have any prerequisites.</Text>
+					) : (
+						prerequisites?.map((prerequisite) => (
+							<TaskCard
+								key={prerequisite.id}
+								task={prerequisite}
+							/> // fetch dependee as task
+						))
+					)}
+				</Stack>
 			</Container>
 		</>
 	);

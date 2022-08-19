@@ -80,17 +80,18 @@ model Task {
     questId            Int?
     achievementDiaryId Int?
     combatTaskId       Int?
-    dependees          Dependency[] @relation("dependee")
-    dependents         Dependency[] @relation("dependent")
+    dependees          Dependency[] @relation("dependent")
+    dependents         Dependency[] @relation("dependee")
     complete           Boolean
+    flagged            Boolean      @default(false)
     labels             String[]
     createdAt          DateTime     @default(now())
 }
 
 model Dependency {
-    dependee    Task   @relation("dependee", fields: [dependeeId], references: [id])
+    dependee    Task   @relation("dependee", fields: [dependeeId], references: [id], onDelete: Cascade)
     dependeeId  String
-    dependent   Task   @relation("dependent", fields: [dependentId], references: [id])
+    dependent   Task   @relation("dependent", fields: [dependentId], references: [id], onDelete: Cascade)
     dependentId String
 
     @@id([dependeeId, dependentId])

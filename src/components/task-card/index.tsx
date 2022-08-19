@@ -1,6 +1,6 @@
 import { Box, Hide, Show, useColorModeValue } from "@chakra-ui/react";
-import { motion } from "framer-motion";
 import { Task } from "@prisma/client";
+import { motion } from "framer-motion";
 import { trpc } from "../../utils/trpc";
 import DesktopTaskCard from "./desktop-task-card";
 import MobileTaskCard from "./mobile-task-card";
@@ -11,7 +11,7 @@ export default function TaskCard({ task }: TaskCardProps) {
 	const bg = useColorModeValue("white", "gray.600");
 	const { queryClient } = trpc.useContext();
 	const mutation = trpc.useMutation(["task.updateTask"], {
-		onMutate: ({ id, complete }) => {
+		onMutate: ({ id, complete, flagged }) => {
 			queryClient.cancelQueries([
 				"task.findAllTasksForAccount",
 				task.accountId,
@@ -21,7 +21,14 @@ export default function TaskCard({ task }: TaskCardProps) {
 				(old: Task[] | undefined): Task[] =>
 					old?.map((task) => ({
 						...task,
-						complete: task.id == id ? complete : task.complete,
+						complete:
+							task.id == id && complete !== undefined
+								? complete ?? false
+								: task.complete,
+						flagged:
+							task.id == id && flagged !== undefined
+								? flagged ?? false
+								: task.flagged,
 					})) ?? []
 			);
 		},
@@ -36,6 +43,10 @@ export default function TaskCard({ task }: TaskCardProps) {
 		mutation.mutate({ id: task.id, complete: !task.complete });
 	};
 
+	const toggleFlagged = () => {
+		mutation.mutate({ id: task.id, flagged: !task.flagged });
+	};
+
 	return (
 		<Box
 			borderRadius={4}
@@ -46,7 +57,11 @@ export default function TaskCard({ task }: TaskCardProps) {
 			whileTap={{ scale: 0.995 }}
 		>
 			<Show above="md">
-				<DesktopTaskCard task={task} toggleComplete={toggleComplete} />
+				<DesktopTaskCard
+					task={task}
+					toggleComplete={toggleComplete}
+					toggleFlagged={toggleFlagged}
+				/>
 			</Show>
 			<Hide above="md">
 				<MobileTaskCard task={task} toggleComplete={toggleComplete} />

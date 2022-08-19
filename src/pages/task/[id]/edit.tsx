@@ -45,7 +45,7 @@ const EditTaskPage: PageWithAuth = () => {
 						variant="ghost"
 						aria-label="Go back"
 						icon={<ChevronLeftIcon />}
-						onClick={() => router.back()}
+						onClick={() => router.push("/task/" + task.id)}
 					/>
 				</Flex>
 				<EditTaskForm task={task} />
