@@ -8,7 +8,7 @@ type TaskCardProps = {
 	task: Task;
 };
 export default function TaskCard({ task }: TaskCardProps) {
-	const bg = useColorModeValue("white", "gray.600");
+	const bg = useColorModeValue("#ffffff6b", "#4a556859");
 	const { queryClient } = trpc.useContext();
 	const mutation = trpc.useMutation(["task.updateTask"], {
 		onMutate: ({ id, complete, flagged }) => {

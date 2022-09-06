@@ -17,7 +17,11 @@ const theme = extendTheme({
 	styles: {
 		global: (props: GlobalProps) => ({
 			body: {
-				bg: mode("blackAlpha.50", "gray.800")(props),
+				bg: mode(
+					"linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+					"linear-gradient(60deg, #29323c 0%, #485563 100%)"
+				)(props),
+				minHeight: "100vh",
 			},
 		}),
 	},
