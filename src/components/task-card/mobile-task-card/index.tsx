@@ -29,7 +29,7 @@ export function MobileTaskCard({ task, toggleComplete }: MobileTaskCardProps) {
 				mx={8}
 			/>
 			<LinkBox flex="1" pr={8}>
-				<Link href={`task/${task.id}`}>
+				<Link href={`/task/${task.id}`}>
 					<LinkOverlay cursor="pointer">
 						<Stack py={8}>
 							<Flex alignItems="center">
