@@ -1,22 +1,16 @@
-import { useBoolean, Flex, IconButton, Show } from "@chakra-ui/react";
+import { Flex, IconButton, Show, useBoolean } from "@chakra-ui/react";
 import CreateTasksModal from "../create-tasks-modal";
-import { SortDownIcon, FilterIcon, DiagramIcon, ListIcon } from "../icons";
+import FilterPopover from "../filter-popover";
+import { DiagramIcon, ListIcon } from "../icons";
+import SortPopover from "../sort-popover";
 
 export default function JourneyToolbar() {
 	const [listMode, { on, off }] = useBoolean(true);
 	return (
 		<Flex>
 			<Flex gap={2} flex="1" justifyContent="left">
-				<IconButton
-					aria-label="Sort"
-					icon={<SortDownIcon />}
-					variant="ghost"
-				/>
-				<IconButton
-					aria-label="Filter"
-					icon={<FilterIcon />}
-					variant="ghost"
-				/>
+				<SortPopover />
+				<FilterPopover />
 			</Flex>
 			<Show above="md">
 				<Flex gap={2} flex="1" justifyContent="center">

@@ -72,9 +72,21 @@ export const DownIcon = (props: IconProps) => (
 	</Icon>
 );
 
+export const ArrowDownIcon = (props: IconProps) => (
+	<Icon {...props}>
+		<i className="fa-solid fa-arrow-down" />
+	</Icon>
+);
+
 export const UpIcon = (props: IconProps) => (
 	<Icon {...props}>
 		<i className="fa-solid fa-angle-up" />
+	</Icon>
+);
+
+export const ArrowUpIcon = (props: IconProps) => (
+	<Icon {...props}>
+		<i className="fa-solid fa-arrow-up" />
 	</Icon>
 );
 
