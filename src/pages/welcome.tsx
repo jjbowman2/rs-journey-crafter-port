@@ -1,8 +1,10 @@
-import { Heading, Container, Text } from "@chakra-ui/react";
+import { Badge, Button, Container, Heading, Text } from "@chakra-ui/react";
 import { NextPage } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 const Welcome: NextPage = () => {
+	const router = useRouter();
 	return (
 		<>
 			<Head>
@@ -15,49 +17,36 @@ const Welcome: NextPage = () => {
 					display="flex"
 					flexDirection="column"
 					px="12"
+					gap={4}
 				>
-					<Heading>Lorem ipsum dolor sit amet.</Heading>
+					<Heading>Welcome to the RuneScape Journey Crafter</Heading>
+					<Badge colorScheme="red" width="fit-content">
+						This application is currently in alpha and many features
+						are actively under development.
+					</Badge>
 					<Text>
-						Lorem ipsum dolor sit amet consectetur adipisicing elit.
-						Eligendi veritatis quae expedita nemo rerum, veniam
-						iusto! Eum dolorum aut vero error quibusdam iusto
-						explicabo perspiciatis libero. Quibusdam tempora tenetur
-						architecto dicta corrupti ipsam mollitia porro veritatis
-						voluptatem, qui impedit doloremque atque unde labore
-						quaerat culpa quisquam numquam cumque quod, dolorum amet
-						illo debitis animi! Quo laudantium velit soluta? Rem
-						nulla provident non delectus distinctio fugiat sapiente
-						obcaecati alias aperiam nostrum iure labore, consectetur
-						amet neque ad nihil eos aliquam adipisci rerum dolor
-						saepe voluptatum assumenda facilis! Nostrum omnis sint
-						aperiam facilis consectetur nobis labore et quas minima,
-						debitis saepe alias corrupti ex necessitatibus iure
-						praesentium expedita nesciunt maiores earum, repudiandae
-						optio tempora. Sed sit debitis voluptatem reprehenderit
-						dolor beatae natus explicabo ea assumenda non!
-						Asperiores necessitatibus sequi dignissimos cum rem
-						eligendi voluptatibus cupiditate voluptates assumenda,
-						quod minima molestiae porro, at saepe reiciendis dicta,
-						quae itaque veniam eos dolor incidunt dolorem. Eum nulla
-						sapiente maiores ab ducimus nesciunt illo ratione
-						laborum odio velit consectetur aspernatur dolor ea quas,
-						provident exercitationem nostrum aliquid modi totam sit
-						quod dolores adipisci! Autem voluptas hic expedita
-						quibusdam, harum eaque numquam praesentium laborum eum
-						facere nisi veniam earum ipsam quam ducimus tempore
-						sapiente temporibus? Suscipit illum, commodi repellendus
-						alias quisquam sequi perspiciatis, unde eligendi
-						voluptas praesentium doloremque fugit sunt odit? Maxime
-						illo distinctio iste, optio maiores est explicabo? Id
-						explicabo nam beatae, placeat labore molestias non
-						temporibus, laborum quas provident reiciendis libero
-						tempora nulla aliquid voluptate dolorum perferendis
-						nihil ullam magnam in facilis dolores? Quam quisquam
-						facere tenetur, voluptas!
+						The world of Gielinor is vast... and there is a lot to
+						do. We each have our own journey ahead of us filled with
+						many fun hours of &apos;scapin, but no two journeys are
+						the same.
+						<br />
+						<br />
+						Sometimes it can feel a bit overwhelming trying to
+						remember all of the tasks and goals we have for our
+						accounts. Starting out with solving a hard clue can
+						sometimes result in a rabbit hole of tasks where
+						you&apos;ve gained 8 total levels and completed two
+						quests. This tool aims to make managing these tasks just
+						a bit easier. All you have to do is create an account
+						and start crafting your journey.
 					</Text>
-					{/* <Button as={Link} href="/add-account" ml="auto" size="lg">
+					<Button
+						onClick={() => router.push("/account/new")}
+						ml="auto"
+						size="lg"
+					>
 						Get Started
-					</Button> */}
+					</Button>
 				</Container>
 			</main>
 		</>
