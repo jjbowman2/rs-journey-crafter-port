@@ -1,5 +1,6 @@
 import {
 	Badge,
+	Box,
 	Checkbox,
 	Flex,
 	FormControl,
@@ -144,10 +145,11 @@ export default function FilterPopover() {
 									{remainingAttributes.length > 0 ? (
 										remainingAttributes.map((attribute) => (
 											<option
+												style={{ padding: 10 }}
 												key={attribute}
 												value={attribute}
 											>
-												{attribute}
+												<Box p={4}>{attribute}</Box>
 											</option>
 										))
 									) : (

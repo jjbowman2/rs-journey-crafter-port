@@ -1,6 +1,7 @@
 import { Button } from "@chakra-ui/react";
-import { signIn } from "next-auth/react";
+import { useClerk } from "@clerk/nextjs";
 
 export default function LoginButton() {
-	return <Button onClick={() => signIn("auth0")}>Login</Button>;
+  const { redirectToSignIn } = useClerk();
+  return <Button onClick={() => void redirectToSignIn()}>Login</Button>;
 }

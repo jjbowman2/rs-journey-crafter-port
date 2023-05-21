@@ -1,31 +1,30 @@
 import { Flex, IconButton, useColorMode } from "@chakra-ui/react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@clerk/nextjs";
 import AccountsDropdown from "../accounts-dropdown";
 import { MoonIcon, SunIcon } from "../icons";
 import LoginButton from "../login-button";
 
 export default function HeaderMenu() {
-	const { data, status } = useSession();
-	// const { isAuthenticated, isLoading, user } = useAuth0();
-	const { colorMode, toggleColorMode } = useColorMode();
+  const { isLoaded, isSignedIn } = useAuth();
+  // const { data, status } = useSession();
+  // const { isAuthenticated, isLoading, user } = useAuth0();
+  const { colorMode, toggleColorMode } = useColorMode();
 
-	if (status == "unauthenticated") {
-		return <LoginButton />;
-	}
+  if (!isLoaded) return null;
 
-	if (status == "loading") {
-		return null;
-	}
+  if (!isSignedIn) {
+    return <LoginButton />;
+  }
 
-	return (
-		<Flex gap={2}>
-			<IconButton
-				aria-label="color-mode"
-				icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-				onClick={toggleColorMode}
-				variant="ghost"
-			/>
-			<AccountsDropdown />
-		</Flex>
-	);
+  return (
+    <Flex gap={2}>
+      <IconButton
+        aria-label="color-mode"
+        icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+        onClick={toggleColorMode}
+        variant="ghost"
+      />
+      <AccountsDropdown />
+    </Flex>
+  );
 }

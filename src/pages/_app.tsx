@@ -1,88 +1,46 @@
 // src/pages/_app.tsx
 import { ChakraProvider } from "@chakra-ui/react";
+import {
+  ClerkProvider,
+  RedirectToSignIn,
+  SignedIn,
+  SignedOut,
+} from "@clerk/nextjs";
 import "@fontsource/inter";
-import { withTRPC } from "@trpc/next";
-import { SessionProvider, useSession } from "next-auth/react";
-import type {
-	AppPropsType,
-	AppType,
-	NextComponentType,
-	NextPageContext,
-} from "next/dist/shared/lib/utils";
-import { ReactQueryDevtools } from "react-query/devtools";
-import superjson from "superjson";
+import type { AppProps } from "next/app";
+import { useRouter } from "next/router";
+import { api } from "~/utils/api";
 import Header from "../components/header";
-import LoadingIndicator from "../components/loading-indicator";
-import type { AppRouter } from "../server/router";
 import "../styles/globals.css";
-import { AuthEnabledComponentConfig } from "../utils/auth.utils";
 import theme from "../utils/theme";
 
-type AppAuthProps = AppPropsType & {
-	Component: NextComponentType<NextPageContext, any, {}> &
-		Partial<AuthEnabledComponentConfig>;
+const publicPages = ["/welcome"];
+
+const MyApp = ({ Component, pageProps }: AppProps) => {
+  // Get the pathname
+  const { pathname } = useRouter();
+
+  // Check if the current route matches a public page
+  const isPublicPage = publicPages.includes(pathname);
+  return (
+    <ClerkProvider {...pageProps}>
+      <ChakraProvider theme={theme}>
+        <Header />
+        {isPublicPage ? (
+          <Component {...pageProps} />
+        ) : (
+          <>
+            <SignedIn>
+              <Component {...pageProps} />
+            </SignedIn>
+            <SignedOut>
+              <RedirectToSignIn />
+            </SignedOut>
+          </>
+        )}
+      </ChakraProvider>
+    </ClerkProvider>
+  );
 };
 
-const MyApp: AppType = ({
-	Component,
-	pageProps: { session, ...pageProps },
-}: AppAuthProps) => {
-	return (
-		<SessionProvider session={session}>
-			<ChakraProvider theme={theme}>
-				<Header />
-				{Component.authenticationEnabled ? (
-					<Auth>
-						<Component {...pageProps} />
-					</Auth>
-				) : (
-					<Component {...pageProps} />
-				)}
-				<ReactQueryDevtools />
-			</ChakraProvider>
-		</SessionProvider>
-	);
-};
-
-const Auth: React.FC<any> = ({ children }) => {
-	// if `{ required: true }` is supplied, `status` can only be "loading" or "authenticated"
-	const { status } = useSession({ required: true });
-
-	if (status === "loading") {
-		return <LoadingIndicator />;
-	}
-
-	return children;
-};
-
-const getBaseUrl = () => {
-	if (typeof window !== "undefined") {
-		return "";
-	}
-	if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`; // SSR should use vercel url
-
-	return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
-};
-
-export default withTRPC<AppRouter>({
-	config({ ctx }) {
-		/**
-		 * If you want to use SSR, you need to use the server's full URL
-		 * @link https://trpc.io/docs/ssr
-		 */
-		const url = `${getBaseUrl()}/api/trpc`;
-
-		return {
-			url,
-			transformer: superjson,
-			/**
-			 * @link https://react-query.tanstack.com/reference/QueryClient
-			 */
-			// queryClientConfig: { defaultOptions: { queries: { staleTime: 60 } } },
-		};
-	},
-	/**
-	 * @link https://trpc.io/docs/ssr
-	 */
-	ssr: false,
-})(MyApp);
+export default api.withTRPC(MyApp);
