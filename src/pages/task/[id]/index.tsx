@@ -13,7 +13,7 @@ import {
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { type Task } from "@prisma/client";
+import { type Dependency, type Task } from "@prisma/client";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -41,23 +41,27 @@ const TaskPage = () => {
   const { data: prerequisites } = api.task.findAllDependeesForTask.useQuery(id);
   const mutation = api.task.updateTask.useMutation({
     onMutate: async (update) => {
-      await utils.task.findTaskById.cancel(task?.id);
-      utils.task.findTaskById.setData(task?.id, (prev: Task) => ({
-        ...prev,
-        ...update,
-      }));
+      await utils.task.findTaskById.cancel(id);
+      utils.task.findTaskById.setData(
+        id,
+        (prev) =>
+          ({
+            ...prev,
+            ...update,
+          } as Task & { dependees: Dependency[] })
+      );
     },
     onSettled: async () => {
-      await utils.task.findTaskById.invalidate(task?.id);
+      await utils.task.findTaskById.invalidate(id);
     },
   });
 
   const toggleComplete = () => {
-    mutation.mutate({ id: task!.id, complete: !task!.complete });
+    mutation.mutate({ id, complete: !task?.complete });
   };
 
   const toggleFlagged = () => {
-    mutation.mutate({ id: task!.id, flagged: !task!.flagged });
+    mutation.mutate({ id, flagged: !task?.flagged });
   };
 
   if (isLoading) return <LoadingIndicator />;
@@ -88,7 +92,7 @@ const TaskPage = () => {
             variant="ghost"
             aria-label="Go back"
             icon={<ChevronLeftIcon />}
-            onClick={() => router.push("/")}
+            onClick={() => void router.push("/")}
           />
           <Spacer />
           {task && (
@@ -127,7 +131,7 @@ const TaskPage = () => {
                 isOpen={deleteDisclosure.isOpen}
                 onClose={deleteDisclosure.onClose}
                 task={task}
-                onDelete={() => router.push("/")}
+                onDelete={() => void router.push("/")}
               />
             </Flex>
           )}

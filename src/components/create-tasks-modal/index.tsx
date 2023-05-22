@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   Button,
   FormControl,
@@ -28,15 +32,16 @@ import { useForm } from "react-hook-form";
 import { selectedAccountAtom } from "../accounts-dropdown";
 import { CreateEditIcon } from "../icons";
 import { api } from "~/utils/api";
+import { type CreateTaskSchema } from "~/server/api/routers/task";
 
 export default function CreateTasksModal() {
   const [selectedAccount] = useAtom(selectedAccountAtom);
-  const userId = selectedAccount!.id;
+  const userId = selectedAccount?.id ?? "";
   const [tab, setTab] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isError, setIsError] = useState(false);
   const [labels, setLabels] = useState<PropsValue<string>>([]); // controlled state for label since multi-select is not compatible with react-hook-form
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset } = useForm<CreateTaskSchema>();
   const utils = api.useContext();
 
   const resetForm = () => {
@@ -70,13 +75,13 @@ export default function CreateTasksModal() {
         <ModalContent
           as="form"
           onSubmit={
-            void handleSubmit(({ title, description, taskType }: any) =>
+            void handleSubmit(({ title, description, taskType }) =>
               mutation.mutate({
                 description,
                 taskType: taskType || "custom",
                 title,
                 accountId: userId,
-                // @ts-ignore
+                // @ts-expect-error TODO: fix this
                 labels: labels.map((label) => label.value),
               })
             )

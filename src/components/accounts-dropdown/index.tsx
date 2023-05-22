@@ -62,12 +62,12 @@ export default function AccountsDropdown() {
         as={Button}
         variant="ghost"
         leftIcon={
-          selectedAccount && (
+          selectedAccount ? (
             <GameIcon
               game={selectedAccount.game}
               accountType={selectedAccount.accountType}
             />
-          )
+          ) : undefined
         }
         rightIcon={<ChevronDownIcon />}
         iconSpacing={!selectedAccount ? 0 : undefined}
@@ -104,7 +104,7 @@ interface GameIconProps {
   accountType: AccountType | null;
 }
 
-const GameIcon = ({ game, accountType }: GameIconProps) => {
+const GameIcon = ({ game }: GameIconProps) => {
   // TODO: get logos for other account types
   let src;
   if (game === Game.rs) {

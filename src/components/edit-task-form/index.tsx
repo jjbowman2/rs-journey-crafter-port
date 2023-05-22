@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import {
   Button,
   Flex,
@@ -9,19 +14,19 @@ import {
   Textarea,
   useToast,
 } from "@chakra-ui/react";
-import { Dependency, Task } from "@prisma/client";
+import type { Dependency, Task } from "@prisma/client";
 import {
   CreatableSelect,
-  GroupBase,
-  OptionBase,
-  PropsValue,
+  type GroupBase,
+  type OptionBase,
+  type PropsValue,
 } from "chakra-react-select";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { trpc } from "../../utils/trpc";
 import { SaveIcon } from "../icons";
 import { api } from "~/utils/api";
+import type { UpdateTaskSchema } from "~/server/api/routers/task";
 
 type EditTaskFormProps = {
   task: Task & {
@@ -40,7 +45,7 @@ export default function EditTaskForm({ task }: EditTaskFormProps) {
   const [labels, setLabels] = useState<PropsValue<LabelOption>>(
     task.labels.map((label) => ({ label, value: label }))
   ); // controlled state for label since multi-select is not compatible with react-hook-form
-  const { register, handleSubmit, formState } = useForm({
+  const { register, handleSubmit, formState } = useForm<UpdateTaskSchema>({
     defaultValues: {
       title: task?.title,
       description: task?.description,
@@ -71,13 +76,13 @@ export default function EditTaskForm({ task }: EditTaskFormProps) {
   return (
     <form
       onSubmit={
-        void handleSubmit(({ title, description, taskType }: any) =>
+        void handleSubmit(({ title, description, taskType }) =>
           mutation.mutate({
             description,
             taskType,
             title,
             id: task.id,
-            // @ts-ignore
+            // @ts-expect-error TODO: fix this
             labels: labels.map((label) => label.value),
           })
         )
@@ -152,8 +157,8 @@ export default function EditTaskForm({ task }: EditTaskFormProps) {
             disabled={
               (!formState.isDirty &&
                 arrayShallowEquality(
-                  // @ts-ignore
-                  labels.map((label) => label.value),
+                  // @ts-expect-error TODO: fix this
+                  labels.map((label) => label.value) ?? [],
                   task.labels
                 )) ||
               formState.isSubmitting
@@ -168,8 +173,8 @@ export default function EditTaskForm({ task }: EditTaskFormProps) {
   );
 }
 
-const arrayShallowEquality = (array1: any[], array2: any[]): boolean => {
+function arrayShallowEquality<T>(array1: T[], array2: T[]): boolean {
   if (array1.length !== array2.length) return false;
   if (!array1.every((val, index) => val === array2[index])) return false;
   return true;
-};
+}

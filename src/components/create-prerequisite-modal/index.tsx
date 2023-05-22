@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   Button,
   FormControl,
@@ -29,6 +33,7 @@ import { useForm } from "react-hook-form";
 import { selectedAccountAtom } from "../accounts-dropdown";
 import { PlusIcon } from "../icons";
 import { api } from "~/utils/api";
+import { type AddPrerequisiteSchema } from "~/server/api/routers/task";
 
 type CreatePrerequisiteModalProps = {
   dependentTaskId: string;
@@ -47,7 +52,7 @@ export default function CreatePrerequisiteModal({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isError, setIsError] = useState(false);
   const [labels, setLabels] = useState<PropsValue<string>>([]); // controlled state for label since multi-select is not compatible with react-hook-form
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset } = useForm<AddPrerequisiteSchema>();
   const utils = api.useContext();
 
   const resetForm = () => {
@@ -85,15 +90,14 @@ export default function CreatePrerequisiteModal({
         <ModalContent
           as="form"
           onSubmit={
-            void handleSubmit(({ title, description, taskType }: any) =>
+            void handleSubmit(({ prerequisite }) =>
               mutation.mutate({
                 dependentTaskId,
                 prerequisite: {
-                  description,
-                  taskType: taskType || "custom",
-                  title,
+                  ...prerequisite,
+                  taskType: prerequisite.taskType || "custom",
                   accountId: userId ?? "",
-                  // @ts-ignore
+                  // @ts-expect-error TODO: fix this
                   labels: labels.map((label) => label.value),
                 },
               })
@@ -126,7 +130,7 @@ export default function CreatePrerequisiteModal({
                       id="taskTitle"
                       placeholder="Example: Complete Cook's Assistant"
                       required
-                      {...register("title")}
+                      {...register("prerequisite.title")}
                     />
                   </FormControl>
                 </TabPanel>
@@ -137,7 +141,7 @@ export default function CreatePrerequisiteModal({
                       id="taskTitle"
                       placeholder="Example: Complete Cook's Assistant"
                       required
-                      {...register("title")}
+                      {...register("prerequisite.title")}
                     />
                   </FormControl>
                   <FormControl>
@@ -145,7 +149,7 @@ export default function CreatePrerequisiteModal({
                     <Textarea
                       id="taskDescription"
                       placeholder="Example: Bake that dude a cake!"
-                      {...register("description")}
+                      {...register("prerequisite.description")}
                     />
                   </FormControl>
                   <FormControl>
@@ -153,7 +157,7 @@ export default function CreatePrerequisiteModal({
                     <Select
                       id="taskType"
                       placeholder="Example: Quest"
-                      {...register("taskType")}
+                      {...register("prerequisite.taskType")}
                     >
                       <option value="skill">Skill</option>
                       <option value="quest">Quest</option>

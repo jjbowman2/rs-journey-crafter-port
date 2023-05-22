@@ -15,13 +15,14 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { selectedAccountIdAtom } from "../../components/accounts-dropdown";
 import { api } from "~/utils/api";
+import { type CreateAccountInput } from "~/server/api/routers/account";
 
 const AddAccount = () => {
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm();
+  } = useForm<CreateAccountInput>();
   const { userId } = useAuth();
   const [, setSelectedAccountId] = useAtom(selectedAccountIdAtom);
   const router = useRouter();
@@ -49,16 +50,17 @@ const AddAccount = () => {
         <Flex
           as="form"
           direction="column"
-          onSubmit={handleSubmit(({ accountName, game, accountType }) => {
-            console.log({ accountName, game, accountType });
-            if (userId)
-              mutation.mutate({
-                userId,
-                accountName,
-                game,
-                accountType: accountType || null,
-              });
-          })}
+          onSubmit={
+            void handleSubmit(({ accountName, game, accountType }) => {
+              if (userId)
+                mutation.mutate({
+                  userId,
+                  accountName,
+                  game,
+                  accountType: accountType || null,
+                });
+            })
+          }
           gap={4}
         >
           <FormControl isRequired>
