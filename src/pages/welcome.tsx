@@ -38,7 +38,7 @@ const Welcome: NextPage = () => {
             you have to do is create an account and start crafting your journey.
           </Text>
           <Button
-            onClick={() => router.push("/account/new")}
+            onClick={() => void router.push("/account/new")}
             ml="auto"
             size="lg"
           >

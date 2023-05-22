@@ -17,6 +17,7 @@ const CreateTaskSchema = z.object({
   labels: z.string().array().default([]),
   createdAt: z.date().default(new Date()),
 });
+export type CreateTaskSchema = z.infer<typeof CreateTaskSchema>;
 
 const UpdateTaskSchema = z.intersection(
   CreateTaskSchema.partial(),
@@ -24,11 +25,13 @@ const UpdateTaskSchema = z.intersection(
     id: z.string(),
   })
 );
+export type UpdateTaskSchema = z.infer<typeof UpdateTaskSchema>;
 
 const AddPrerequisiteSchema = z.object({
   dependentTaskId: z.string(),
   prerequisite: CreateTaskSchema,
 });
+export type AddPrerequisiteSchema = z.infer<typeof AddPrerequisiteSchema>;
 
 export const taskRouter = createTRPCRouter({
   findAllTasksForAccount: protectedProcedure

@@ -2,6 +2,15 @@ import { z } from "zod";
 import { AccountType, Game } from "@prisma/client";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
+export const createAccountInput = z.object({
+  userId: z.string(),
+  accountName: z.string(),
+  game: z.nativeEnum(Game),
+  accountType: z.nativeEnum(AccountType).nullable(),
+});
+
+export type CreateAccountInput = z.infer<typeof createAccountInput>;
+
 export const accountRouter = createTRPCRouter({
   findAllForUser: protectedProcedure
     .input(z.string())
@@ -18,14 +27,7 @@ export const accountRouter = createTRPCRouter({
       });
     }),
   createAccount: protectedProcedure
-    .input(
-      z.object({
-        userId: z.string(),
-        accountName: z.string(),
-        game: z.nativeEnum(Game),
-        accountType: z.nativeEnum(AccountType).nullable(),
-      })
-    )
+    .input(createAccountInput)
     .mutation(async ({ input, ctx }) => {
       return await ctx.prisma.gameAccount.create({
         data: input,

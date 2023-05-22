@@ -20,7 +20,7 @@ export function TaskIcon({ task, ...props }: TaskIconProps) {
   if (isLoading) return null;
   if (isError || task.taskType === "custom")
     return <TaskDefaultIcon {...props} />;
-  let imageName = account!.game === "rs" ? "rs_" : "osrs_";
+  let imageName = account?.game === "rs" ? "rs_" : "osrs_";
   if (task.taskType === "skill") {
     imageName += task.skill ?? "stats";
   } else {
