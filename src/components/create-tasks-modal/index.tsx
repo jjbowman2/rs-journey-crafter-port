@@ -74,18 +74,16 @@ export default function CreateTasksModal() {
         <ModalOverlay />
         <ModalContent
           as="form"
-          onSubmit={
-            void handleSubmit(({ title, description, taskType }) =>
-              mutation.mutate({
-                description,
-                taskType: taskType || "custom",
-                title,
-                accountId: userId,
-                // @ts-expect-error TODO: fix this
-                labels: labels.map((label) => label.value),
-              })
-            )
-          }
+          onSubmit={handleSubmit(({ title, description, taskType }) =>
+            mutation.mutate({
+              description,
+              taskType: taskType || "custom",
+              title,
+              accountId: userId,
+              // @ts-expect-error TODO: fix this
+              labels: labels.map((label) => label.value),
+            })
+          )}
         >
           <ModalHeader pb={0}>Add a Task</ModalHeader>
           <ModalCloseButton />

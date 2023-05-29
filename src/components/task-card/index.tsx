@@ -1,5 +1,5 @@
 import { Box, Hide, Show, useColorModeValue } from "@chakra-ui/react";
-import { type Task } from "@prisma/client";
+import type { Dependency, Task } from "@prisma/client";
 import { motion } from "framer-motion";
 import DesktopTaskCard from "./desktop-task-card";
 import MobileTaskCard from "./mobile-task-card";
@@ -7,6 +7,11 @@ import { api } from "~/utils/api";
 type TaskCardProps = {
   task: Task;
 };
+
+type TaskWithDependees = Task & {
+  dependees: Dependency[];
+};
+
 export default function TaskCard({ task }: TaskCardProps) {
   const bg = useColorModeValue("#ffffff6b", "#4a556859");
   const utils = api.useContext();
@@ -15,7 +20,7 @@ export default function TaskCard({ task }: TaskCardProps) {
       await utils.task.findAllTasksForAccount.cancel(task.accountId);
       utils.task.findAllTasksForAccount.setData(
         task.accountId,
-        (old: Task[] | undefined): Task[] =>
+        (old: TaskWithDependees[] | undefined): TaskWithDependees[] =>
           old?.map((task) => ({
             ...task,
             complete:

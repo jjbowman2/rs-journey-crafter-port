@@ -7,15 +7,75 @@ import JourneyToolbar from "../journey-toolbar";
 import LoadingIndicator from "../loading-indicator";
 import TaskCard from "../task-card";
 import { api } from "~/utils/api";
+import { sortAttributeAtom, sortOrderAtom } from "../sort-popover";
+import { filtersAtom, hideCompleteAtom } from "../filter-popover";
 
 export default function MyJourney() {
   const [selectedAccount] = useAtom(selectedAccountAtom);
+  const [sortOrder] = useAtom(sortOrderAtom);
+  const [sortAttribute] = useAtom(sortAttributeAtom);
+  const [filters] = useAtom(filtersAtom);
+  const [hideComplete] = useAtom(hideCompleteAtom);
   const accountId = selectedAccount?.id || "";
   const { isError, isLoading, data } =
     api.task.findAllTasksForAccount.useQuery(accountId);
   const tasks = useMemo(
-    () => data?.sort((t1, t2) => Number(t1.createdAt) - Number(t2.createdAt)),
-    [data]
+    () =>
+      data
+        ?.sort((taskA, taskB) => {
+          let attributeA, attributeB;
+          switch (sortAttribute) {
+            case "numberPrerequisites":
+              attributeA = taskA.dependees?.length ?? 0;
+              attributeB = taskB.dependees?.length ?? 0;
+              break;
+            case "title":
+              attributeA = taskA.title;
+              attributeB = taskB.title;
+              break;
+            case "created-date":
+            default:
+              attributeA = taskA.createdAt;
+              attributeB = taskB.createdAt;
+          }
+          if (attributeA < attributeB) {
+            return sortOrder === "asc" ? -1 : 1;
+          }
+          return sortOrder === "asc" ? 1 : -1;
+        })
+        ?.filter((task) => {
+          if (hideComplete && task.complete) return false;
+          return filters.every((filter) => {
+            let attribute;
+            switch (filter.attribute) {
+              case "labels":
+                attribute = task.labels?.join(" ") ?? "";
+                break;
+              case "type":
+                attribute = task.taskType;
+                break;
+              case "description":
+              case "title":
+              default:
+                attribute = task[filter.attribute];
+            }
+            switch (filter.operator) {
+              case "==":
+                return (
+                  attribute
+                    ?.toLowerCase()
+                    .includes(filter.value.toLowerCase()) ?? false
+                );
+              case "!=":
+                return (
+                  !attribute
+                    ?.toLowerCase()
+                    .includes(filter.value.toLowerCase()) ?? false
+                );
+            }
+          });
+        }),
+    [data, sortOrder, sortAttribute, hideComplete, filters]
   );
   const router = useRouter();
 

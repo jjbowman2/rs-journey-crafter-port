@@ -75,18 +75,16 @@ export default function EditTaskForm({ task }: EditTaskFormProps) {
 
   return (
     <form
-      onSubmit={
-        void handleSubmit(({ title, description, taskType }) =>
-          mutation.mutate({
-            description,
-            taskType,
-            title,
-            id: task.id,
-            // @ts-expect-error TODO: fix this
-            labels: labels.map((label) => label.value),
-          })
-        )
-      }
+      onSubmit={handleSubmit(({ title, description, taskType }) =>
+        mutation.mutate({
+          description,
+          taskType,
+          title,
+          id: task.id,
+          // @ts-expect-error TODO: fix this
+          labels: labels.map((label) => label.value),
+        })
+      )}
     >
       <Stack gap={4}>
         <FormControl isRequired>

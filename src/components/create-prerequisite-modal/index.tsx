@@ -89,20 +89,18 @@ export default function CreatePrerequisiteModal({
         <ModalOverlay />
         <ModalContent
           as="form"
-          onSubmit={
-            void handleSubmit(({ prerequisite }) =>
-              mutation.mutate({
-                dependentTaskId,
-                prerequisite: {
-                  ...prerequisite,
-                  taskType: prerequisite.taskType || "custom",
-                  accountId: userId ?? "",
-                  // @ts-expect-error TODO: fix this
-                  labels: labels.map((label) => label.value),
-                },
-              })
-            )
-          }
+          onSubmit={handleSubmit(({ prerequisite }) =>
+            mutation.mutate({
+              dependentTaskId,
+              prerequisite: {
+                ...prerequisite,
+                taskType: prerequisite.taskType || "custom",
+                accountId: userId ?? "",
+                // @ts-expect-error TODO: fix this
+                labels: labels.map((label) => label.value),
+              },
+            })
+          )}
         >
           <ModalHeader pb={0}>Add a Prerequisite</ModalHeader>
           <ModalCloseButton />

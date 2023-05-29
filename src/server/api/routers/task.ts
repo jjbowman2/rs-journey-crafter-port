@@ -40,6 +40,7 @@ export const taskRouter = createTRPCRouter({
       return await ctx.prisma.task.findMany({
         where: { accountId: input },
         orderBy: { createdAt: "desc" },
+        include: { dependees: true },
       });
     }),
   findTaskById: protectedProcedure

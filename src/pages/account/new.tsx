@@ -50,17 +50,15 @@ const AddAccount = () => {
         <Flex
           as="form"
           direction="column"
-          onSubmit={
-            void handleSubmit(({ accountName, game, accountType }) => {
-              if (userId)
-                mutation.mutate({
-                  userId,
-                  accountName,
-                  game,
-                  accountType: accountType || null,
-                });
-            })
-          }
+          onSubmit={handleSubmit(({ accountName, game, accountType }) => {
+            if (userId)
+              mutation.mutate({
+                userId,
+                accountName,
+                game,
+                accountType: accountType || null,
+              });
+          })}
           gap={4}
         >
           <FormControl isRequired>

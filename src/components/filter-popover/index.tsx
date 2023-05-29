@@ -28,14 +28,6 @@ import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { FilterIcon, PlusIcon, XIcon } from "../icons";
 
-// type SortOrder = "asc" | "desc";
-// type SortAttribute = "created-date" | "numberPrerequisites" | "title";
-
-// const sortOrderAtom = atomWithStorage<SortOrder>("task-sort-order", "asc");
-// const sortAttributeAtom = atomWithStorage<SortAttribute>(
-// 	"task-sort-attribute",
-// 	"created-date"
-// );
 const FilterAttribute = z.enum(["title", "description", "type", "labels"]);
 type FilterAttribute = z.infer<typeof FilterAttribute>;
 const FilterOperator = z.enum(["==", "!="]);
@@ -48,8 +40,8 @@ const Filter = z.object({
 });
 type Filter = z.infer<typeof Filter>;
 
-const filtersAtom = atomWithStorage<Filter[]>("task-filters", []);
-const hideCompleteAtom = atomWithStorage("hide-complete-tasks", true);
+export const filtersAtom = atomWithStorage<Filter[]>("task-filters", []);
+export const hideCompleteAtom = atomWithStorage("hide-complete-tasks", true);
 
 export default function FilterPopover() {
   const [filterAttribute, setFilterAttribute] = useState<
