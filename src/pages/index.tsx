@@ -19,18 +19,18 @@ const Home = () => {
       </Head>
 
       <Container maxW="container.lg" as="main">
-        <Tabs variant="line" align="center">
-          <TabList>
-            <Tab>My Journey</Tab>
-            <Tab>Templates</Tab>
-          </TabList>
-          <TabPanels>
-            <TabPanel>
-              <MyJourney />
-            </TabPanel>
-            <TabPanel>Coming Soon</TabPanel>
-          </TabPanels>
-        </Tabs>
+        {/* <Tabs variant="line" align="center"> */}
+        {/* <TabList> */}
+        {/* <Tab>My Journey</Tab> */}
+        {/* <Tab>Templates</Tab> */}
+        {/* </TabList> */}
+        {/* <TabPanels> */}
+        {/* <TabPanel> */}
+        <MyJourney />
+        {/* </TabPanel> */}
+        {/* <TabPanel>Coming Soon</TabPanel> */}
+        {/* </TabPanels> */}
+        {/* </Tabs> */}
       </Container>
     </>
   );

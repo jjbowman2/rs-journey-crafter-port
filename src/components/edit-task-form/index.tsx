@@ -132,7 +132,7 @@ export default function EditTaskForm({ task }: EditTaskFormProps) {
           ></CreatableSelect>
         </FormControl>
         {/* TODO: make this like smart select component with multiple */}
-        <FormControl>
+        {/* <FormControl>
           <FormLabel htmlFor="taskPrerequisites">Add a Prerequisite</FormLabel>
           <Input
             id="taskPrerequisites"
@@ -140,7 +140,7 @@ export default function EditTaskForm({ task }: EditTaskFormProps) {
             disabled
             // {...register("prerequisites")}
           />
-        </FormControl>
+        </FormControl> */}
         <Flex justifyContent="end" gap={8}>
           <Button
             colorScheme="orange"

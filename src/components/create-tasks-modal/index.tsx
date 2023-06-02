@@ -165,7 +165,7 @@ export default function CreateTasksModal() {
                     ></CreatableSelect>
                   </FormControl>
                   {/* TODO: make this like smart select component with multiple */}
-                  <FormControl>
+                  {/* <FormControl>
                     <FormLabel htmlFor="taskPrerequisites">
                       Add a Prerequisite
                     </FormLabel>
@@ -175,7 +175,7 @@ export default function CreateTasksModal() {
                       disabled
                       // {...register("prerequisites")}
                     />
-                  </FormControl>
+                  </FormControl> */}
                 </TabPanel>
               </TabPanels>
             </Tabs>
